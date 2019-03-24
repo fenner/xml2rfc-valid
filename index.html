@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>xml2rfc validator</title>
+</head>
+<body>
+<h1>xml2rfc validator</h1>
+<p>This validator does up to 4 passes on the uploaded XML document:
+<ol>
+<li>Preprocessing:
+ <ol>
+ <li>Change references to the DTD to point to my local copy.
+ <li>Change parameter entity references (which only belong in DTDs themselves)
+into general entity references (the right way to include references if
+you're not using &lt;?rfc include=''?&gt; by removing the '%' after 'ENTITY'.
+ </ol>
+<li>Expand &lt;?rfc include=''?&gt; processing instructions, if present.
+Note that this step can change line numbers by reformatting the XML.
+<li>Check, using xmllint, against the RFC2629(bis) DTD (currently using the
+DTD released with xml2rfc 1.32, January 7, 2007).  This checks both that the
+XML is well-formed and that it matches the DTD.
+Any external entities are loaded during this phase.
+<li>Check, using a <a href="additional-checks.txt">funky xsl transform</a>,
+additional issues that just checking against the DTD can't, e.g.,
+<ul>
+<li>Require anchors on references if using symrefs or sortrefs PIs
+<li>Warn that figure inside t is deprecated
+<li>Long titles need short abbrev attributes
+<li>No duplicate anchors
+<li>FYI on unreferenced anchors (error when it's a reference)
+<li>FYI when plain text contains something that looks like an anchor
+(e.g., &lt;t>this is seen in [RFC2822]&lt;/t>)
+<li>Warn about multiple &lt;city>, &lt;region>, &lt;code> or &lt;country>
+<li>Note that "Internet Draft" or "I-D" in seriesInfo should be "Internet-Draft"
+<li>Require ipr or number on &lt;rfc&gt; element unless &lt;?rfc private?&gt;
+<li>Warn that iprExtract is meaningless unless the ipr declared is restrictive
+<li>Note that historic documents don't get a seriesNo
+<li>Note that pre-3978 IPR will not be accepted after 6 May 2005
+<li>&lt;?rfc strict="yes"?&gt; items (fyi unless the strict PI is in the document):
+<ul>
+<li>No more than 5 authors
+<li>No references in abstract
+<li>Missing abstract
+</ul>
+<li>Warn about references to expired, withdrawn, replaced or published Internet Drafts (if you're using the reference library via &lt;?rfc include=''&gt; or entity references).
+<li>Warn about references to obsoleted RFCs (if you're using the reference library via &lt;?rfc include=''&gt; or entity references).
+</ul>
+If you can think of more checks that might be useful, please
+<a href="mailto:fenner@gmail.com">let me know</a>.
+</ol>
+<p>
+Note that by default, XML submitted gets archived to help
+Bill with his tool development.  If you don't want to allow this, please
+select the checkbox below.
+<p>
+<form method="post" action="valid.cgi" enctype="multipart/form-data">
+<input type="file" name="source">
+<input type="checkbox" name="delete">it is NOT OK for Bill to use this document
+for tool development
+<br>
+<input type="submit">
+</form>
+</body>
+</html>
